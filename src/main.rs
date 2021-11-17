@@ -1,3 +1,6 @@
+#![allow(unused)]
 fn main() {
-    println!("Hello World\n");
+    // Hello world
+    // This is other comment
+    println!("Hello World\n"); // Here is another comment
 }
