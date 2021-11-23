@@ -26,7 +26,7 @@ fn largest_char(list: &[char]) -> char {
 
 // Largest using Generics
 
-fn largest<T>(list: &[T]) -> T {
+fn largest<T: PartialOrd + Copy>(list: &[T]) -> T {
     let mut largest_value = list[0];
 
     for &item in list {
@@ -70,6 +70,8 @@ enum Option<T> {
     None,
 }
 
+use std::fmt::{Display, Debug};
+use hello_rust::{Tweet, NewsArticle, Summary};
 
 fn main() {
 
@@ -93,4 +95,83 @@ fn main() {
 
     let pos_mixed = pos_integer.mixup(pos_float);
 
+
+    let tweet = Tweet {
+        username: String::from("horse_ebooks"),
+        content: String::from(
+            "of course, as you probably already know, people"
+        ),
+        reply: false,
+        retweet: false
+    };
+
+    println!("{}", tweet.summarize());
+
+    let article = NewsArticle {
+        author: String::from("Iceburgh"),
+        location: String::from("Pittsburgh, PA, USA"),
+        headline: String::from("Penguins win the Stanley Cup Championship!"),
+        content: String::from("The Pittsburgh Penguins once again are the best \
+        hockey team in the NHL"),
+    };
+
+    println!("New article available! {}", article.summarize());
+
+    let summarizable = returns_summarizable();
+    println!("{}", summarizable.summarize_author());
 }
+
+
+// Specifying multiple trait bounds with +
+fn some_function<T: Display + Clone, U: Clone + Debug>(t: &T, u: &U) -> i32 {
+    1
+}
+
+// Using where to make it clearer
+
+fn some_function_clearer<T, U>(t: &T, u: &U) -> i32 
+    where   T:Display + Clone,
+            U: Clone + Debug
+{
+    1
+}
+
+
+// Using impl Trait syntax in the return position
+fn returns_summarizable() -> impl Summary {
+    Tweet {
+        username: String::from("horse_ebooks"),
+        content: String::from(
+            "of course, as you probably already know, people"
+        ),
+        reply: false,
+        retweet: false
+    }
+}
+
+
+// Fails it can return between 2 types NewsArticle or Tweet
+// fn returns_summarizable_fails(switch: bool) -> impl Summary {
+//     if switch {
+//         NewsArticle {
+//             headline: String::from(
+//                 "Penguins win the Stanley Cup Championship!",
+//             ),
+//             location: String::from("Pittsburgh, PA, USA"),
+//             author: String::from("Iceburgh"),
+//             content: String::from(
+//                 "The Pittsburgh Penguins once again are the best \
+//                  hockey team in the NHL.",
+//             ),
+//         }
+//     } else {
+//         Tweet {
+//             username: String::from("horse_ebooks"),
+//             content: String::from(
+//                 "of course, as you probably already know, people",
+//             ),
+//             reply: false,
+//             retweet: false,
+//         }
+//     }
+// }
