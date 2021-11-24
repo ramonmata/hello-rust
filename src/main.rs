@@ -37,7 +37,8 @@ fn largest_char(list: &[char]) -> char {
 
 // Largest using Generics
 
-fn largest<T>(list: &[T]) -> T {
+fn largest<T: PartialOrd + Copy>(list: &[T]) -> T
+{
     let mut largest_value = list[0];
 
     for &item in list {
@@ -81,6 +82,8 @@ enum Option<T> {
     None,
 }
 
+
+use std::cmp::PartialOrd;
 
 fn main() {
 
