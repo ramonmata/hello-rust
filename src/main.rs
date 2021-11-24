@@ -1,4 +1,7 @@
 #![allow(unused)]
+
+use std::fmt::Display;
+
 fn main() {
     /*
     // Every reference in Rust has a "lifetime"
@@ -33,6 +36,15 @@ fn main() {
     let i = ImportantExcerpt {
         part: first_sentence,
     };
+
+    println!("Level: {}", i.level());
+    println!("Announce and Return Part: {}", i.announce_and_return_part("Here is my announcement"));
+
+
+    // Value is stored directly in the program binary, which is always available.
+    let s: &'static str = "I have a static lifetime.";
+
+    println!("Longest Plus: {}", longest_with_an_announcement("ABC", "DEFG", "Sending Two Strings"));
 }
 
 // Input Life Times, Output LifeTimes
@@ -57,6 +69,17 @@ struct ImportantExcerpt<'a> {
     part: &'a str,
 }
 
+
+impl<'a> ImportantExcerpt<'a> {
+    fn level(&self) -> i32 {
+        3
+    }
+
+    fn announce_and_return_part(&self, announcement: &str) -> &str {
+        println!("Attention Please: {}", announcement);
+        self.part
+    }
+}
 
 // LIFETIME ELISION RULES
 
@@ -86,3 +109,19 @@ struct ImportantExcerpt<'a> {
 
 // This third rule makes methods much nicer to read and write because 
 // fewer symbols are necessary.
+
+fn longest_with_an_announcement<'a, T>(
+    x:&'a str,
+    y:&'a str,
+    ann: T,
+) -> &'a str 
+where
+    T: Display
+{
+    println!("Announcement! {}", ann);
+    if x.len() > y.len() {
+        x
+    } else {
+        y
+    }
+}
