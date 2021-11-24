@@ -1,5 +1,16 @@
 #![allow(unused)]
 
+
+// monomorphization
+// =================
+// Rust implements generics in such a way that your code doesn’t run
+// any slower using generic types than it would with concrete types.
+
+// Rust accomplishes this by performing monomorphization of the code
+// that is using generics at compile time. Monomorphization is the
+// process of turning generic code into specific code by filling in
+// the concrete types that are used when compil
+
 fn largest_i32(list: &[i32]) -> i32 {
     let mut largest_value = list[0];
 
