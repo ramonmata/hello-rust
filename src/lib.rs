@@ -9,13 +9,24 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn new(args: &[String]) -> Result<Config, &str> {
+    pub fn new(mut args: env::Args) -> Result<Config, &'static str> { // because we are returning string literals and there is no other reference in the args
         if args.len() < 3 {
             return Err("Not enough arguments")
         }
 
-        let query = args[1].clone();
-        let filename = args[2].clone();
+        // let query = args[1].clone();
+        // let filename = args[2].clone();
+
+        args.next();
+        let query = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get a query string"),
+        };
+
+        let filename = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get a file name"),
+        };
 
         let case_sensitive = env::var("CASE_INSENSITIVE").is_err();
 
@@ -42,15 +53,20 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 
 // Search
 pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str>{
-    let mut results = Vec::new(); // Compilers infers type
+    contents
+        .lines()
+        .filter(|line| line.contains(query))
+        .collect()
 
-    for line in contents.lines() {
-        if line.contains(query) {
-            results.push(line);
-        }
-    }
+        // let mut results = Vec::new(); // Compilers infers type
 
-    results
+        // for line in contents.lines() {
+        //     if line.contains(query) {
+        //         results.push(line);
+        //     }
+        // }
+    
+        // results
 }
 
 pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
